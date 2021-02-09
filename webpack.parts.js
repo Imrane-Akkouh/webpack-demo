@@ -2,6 +2,8 @@ const { WebpackPluginServe } = require('webpack-plugin-serve');
 
 const { MiniHtmlWebpackPlugin } = require('mini-html-webpack-plugin');
 
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 exports.devServer = () => ({
     watch: true,
     plugins: [
@@ -15,16 +17,33 @@ exports.devServer = () => ({
     ]
 })
 
-exports.page = (title) =>({
+exports.page = (title) => ({
     plugins: [
-        new MiniHtmlWebpackPlugin({ context: {title} })
+        new MiniHtmlWebpackPlugin({ context: { title } })
     ]
 })
 
-exports.loadCSS = () => ({
+exports.loadCSS = () => ({//loads css and inlines it with js but this prevents us from cashing styles
     module: {
-      rules: [
-        { test: /\.css$/, use: ["style-loader", "css-loader"] },
-      ],
+        rules: [
+            { test: /\.css$/, use: ["style-loader", "css-loader"] },
+        ],
     },
-  });
+});
+
+exports.extractCSS = ({ options = {}, loaders = [] } = {}) => ({//extracts css and bundles it in a separate file
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [{ loader: MiniCssExtractPlugin.loader, options }, "css-loader"].concat(loaders),
+                sideEffects: true
+            }
+        ],
+    },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+        }),
+    ],
+});
