@@ -1,5 +1,7 @@
-export default (text="Hello thad World") =>{
-    const element = document.createElement("div");
-    element.innerHTML = text;
-    return element;
+export default (text="Hello za Warudo") =>{
+    const container = document.createElement("div");
+    const header = document.createElement("p");
+    header.innerHTML = text;
+    container.appendChild(header);
+    return container;
 }
